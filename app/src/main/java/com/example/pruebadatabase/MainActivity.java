@@ -33,7 +33,7 @@ import java.util.List;
 
     5. MOMENTO LAYOUT APP
 
-    6. PROGRAMACION DE LA ACTIVIDAD.
+    6. PROGRAMACION DE LA ACTIVIDAD Y DEMAS CLASES
 
         !! [Android Studio] MIRAR LA FUNCION "App Inspection" PARA LA BASE DE DATOS,
             SOLO FUNCIONA CON LA APP EN MOVIMIENTO
@@ -60,6 +60,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // 2. Instanciar base de datos
+        database = DatoRoomDatabase.getInstance(this);
+
+        // 3. Variables y su conexion a la vista
         enlazarComponentes();
 
         actualizarLista();
@@ -70,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
 
         switch (view.getId()) {
+
             case R.id.btnInsert:
                 dato = new DatoEntity();
 
@@ -111,10 +117,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void enlazarComponentes() {
 
-        // 2. Instanciar base de datos
-        database = DatoRoomDatabase.getInstance(this);
-
-        // 3. Variables y su conexion a la vista
         editTextNombre = findViewById(R.id.editTextNombre);
         editTextEdad = findViewById(R.id.editTextEdad);
         editTextNombreBorrar = findViewById(R.id.editTextBorrar);
@@ -137,6 +139,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    // Metodo encargado de enlazar los distintos componentes al recyclerView y mostrarlo en la vista.
+    // En este caso, se requiere para realizar la busqueda con el metodo "search" de DataDao.
     private void mostrarLista(List<DatoEntity> dl) {
 
         linearLayoutManager = new LinearLayoutManager(this);
@@ -146,6 +150,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView.setAdapter(adapterView);
     }
 
+    // Metodo encargado de actualizar la lista, realizando una consulta a la base de datos.
     private void actualizarLista() {
         datoEntityList = database.dataDao().selectAll();
         mostrarLista(datoEntityList);
