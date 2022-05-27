@@ -17,10 +17,12 @@ public class AdapterRecylerView extends RecyclerView.Adapter<AdapterRecylerView.
 
     List<DatoEntity> datoEntityList;
     Activity context;
+    ClickListener clickListener;
 
-    public AdapterRecylerView(List<DatoEntity> datoEntityList, Activity context) {
+    public AdapterRecylerView(List<DatoEntity> datoEntityList, Activity context, ClickListener clickListener) {
         this.datoEntityList = datoEntityList;
         this.context = context;
+        this.clickListener = clickListener;
     }
 
     @NonNull
@@ -44,13 +46,19 @@ public class AdapterRecylerView extends RecyclerView.Adapter<AdapterRecylerView.
         return datoEntityList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         TextView textView;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             textView = itemView.findViewById(R.id.textViewNombreItem);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            clickListener.onItemClick(getAdapterPosition());
         }
     }
 }

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -41,6 +42,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    ClickListener clickListener;
+
     // 3. Variables y su conexion a la vista
     Button btnInsert, btnDelete, btnSearch, btnSelect, btnDeleteAll;
     EditText editTextNombre, editTextEdad, editTextNombreBorrar, editTextNombreBuscar;
@@ -68,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         enlazarComponentes();
 
         actualizarLista();
+
     }
 
 
@@ -102,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btnSearch:
                 datoEntityList = database.dataDao().search(editTextNombreBuscar.getText().toString());
                 Toast.makeText(this, "Búsqueda Realizada", Toast.LENGTH_SHORT).show();
+
                 mostrarLista(datoEntityList);
                 break;
 
@@ -143,10 +148,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // En este caso, se requiere para realizar la busqueda con el metodo "search" de DataDao.
     private void mostrarLista(List<DatoEntity> dl) {
 
+        listenerLista();
         linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        adapterView = new AdapterRecylerView(datoEntityList, this);
+        adapterView = new AdapterRecylerView(datoEntityList, this, clickListener);
         recyclerView.setAdapter(adapterView);
     }
 
@@ -155,5 +161,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         datoEntityList = database.dataDao().selectAll();
         mostrarLista(datoEntityList);
 
+    }
+
+    // Metodo encargado de preparar la accion al pulsar sobre un elemento de la lista
+    private void listenerLista(){
+        clickListener = posicion -> {
+            Intent intent = new Intent(getApplicationContext(), ActivityDetalle.class);
+            intent.putExtra("nombre", datoEntityList.get(posicion).getName());
+            intent.putExtra("edad", datoEntityList.get(posicion).getAge().toString());
+            startActivity(intent);
+        };
     }
 }
